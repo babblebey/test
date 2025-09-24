@@ -4,7 +4,7 @@ on:
     types: [opened, reopened, edited]
 
 permissions:
-  content: read
+  contents: read
   issues: write
   models: read
 

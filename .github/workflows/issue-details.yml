@@ -16,7 +16,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: genaiscript/issue-details
         run: npx -y genaiscript@latest run issue-details --pull-request-comment --out-trace $GITHUB_STEP_SUMMARY   
         env:
-          GITHUB_TOKEN: ${{ secrets.USER_TOKEN }}  
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}  

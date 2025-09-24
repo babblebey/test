@@ -18,6 +18,13 @@ tools:
   web-fetch:
   web-search:
 
+engine:
+  id: codex
+  model: gpt-4
+  user-agent: custom-workflow-name
+  env:
+    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
 timeout_minutes: 10
 ---
 

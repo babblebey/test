@@ -17,6 +17,6 @@ jobs:
         with:
           node-version: 22
       - name: genaiscript/issue-details
-        run: npx -y genaiscript@latest run issue-details --pull-comment --out-trace $GITHUB_STEP_SUMMARY   
+        run: npx -y genaiscript@latest run issue-details --issue-comment --out-trace $GITHUB_STEP_SUMMARY   
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  

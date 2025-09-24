@@ -14,7 +14,7 @@
 
 const changes = await git.diff({
     staged: true,
-    paths: ["src/content/dictionary/**.mdx"]
+    // paths: ["src/content/dictionary/**.mdx"]
 });
 
 def("CONTRIBUTION", changes);

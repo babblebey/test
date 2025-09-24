@@ -1,0 +1,29 @@
+name: PR Reviewer
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened]
+
+permissions:
+  contents: read
+  issues: write
+  models: read
+
+jobs:
+  issue-details:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: tibdex/github-app-token@v2
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+      - name: genaiscript/issue-details
+        run: npx -y genaiscript@latest run word-review --pull-request-comment --out-trace $GITHUB_STEP_SUMMARY   
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}  
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

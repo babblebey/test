@@ -26,3 +26,4 @@ jobs:
         run: npx -y genaiscript@latest run issue-details --pull-request-comment --out-trace $GITHUB_STEP_SUMMARY   
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}  
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

@@ -16,7 +16,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
       - name: genaiscript/issue-details
         run: npx -y genaiscript@latest run issue-details --pull-comment --out-trace $GITHUB_STEP_SUMMARY   
         env:

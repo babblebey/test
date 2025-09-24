@@ -5,17 +5,17 @@
 //     }
 // })
 
-const changes = await git.changedFiles({
-    paths: ["src/content/dictionary/**.mdx"],
-    base: await git.branch()
-});
+// const changes = await git.changedFiles({
+//     paths: ["src/content/dictionary/**.mdx"],
+//     base: await git.branch()
+// });
 
 // defAgent
 
-// const changes = await git.diff({
-//     staged: true,
-//     paths: ["src/content/dictionary/**.mdx"]
-// });
+const changes = await git.diff({
+    staged: true,
+    paths: ["src/content/dictionary/**.mdx"]
+});
 
 def("CONTRIBUTION", changes);
 

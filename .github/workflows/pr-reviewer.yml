@@ -5,11 +5,11 @@ on:
 
 permissions:
   contents: read
-  issues: write
+  pull_requests: write
   models: read
 
 jobs:
-  issue-details:
+  pr-reviewer:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

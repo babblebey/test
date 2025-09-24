@@ -1,4 +1,5 @@
 ---
+name: Issue Clarifier CAI Workflow
 on:
   issues:
     types: [opened]

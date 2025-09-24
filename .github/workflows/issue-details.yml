@@ -19,4 +19,4 @@ jobs:
       - name: genaiscript/issue-details
         run: npx -y genaiscript@latest run issue-details --pull-request-comment --out-trace $GITHUB_STEP_SUMMARY   
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+          GITHUB_TOKEN: ${{ secrets.USER_TOKEN }}  

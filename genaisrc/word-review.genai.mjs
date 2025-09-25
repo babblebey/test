@@ -16,7 +16,7 @@ const diff = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}
   }
 });
 
-const word = diff.data.patch;
+const word = diff.data[0].patch;
 
 // defAgent
 

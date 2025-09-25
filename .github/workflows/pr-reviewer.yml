@@ -23,9 +23,8 @@ jobs:
       #     app_id: ${{ secrets.APP_ID }}
       #     private_key: ${{ secrets.APP_PRIVATE_KEY }}
       - name: genaiscript/issue-details
-        run: npx -y genaiscript@latest run word-review --pull-request-comment --out-trace $GITHUB_STEP_SUMMARY
-        with:
-          pull_request: ${{ github.event.pull_request.number }}   
+        run: npx -y genaiscript@latest run word-review --pull-request-comment --out-trace $GITHUB_STEP_SUMMARY   
         env:
+          GITHUB_PULL_REQUEST: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

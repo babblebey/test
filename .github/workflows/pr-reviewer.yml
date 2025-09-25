@@ -5,7 +5,7 @@ on:
 
 permissions:
   contents: read
-  pull_requests: write
+  pull-requests: write
   models: read
 
 jobs:

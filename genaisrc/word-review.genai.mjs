@@ -1,33 +1,28 @@
 script({
   description: "Review a word contribution pull request",
   parameters: {
-    pull_request: { type: "number", description: "The pull request number to review", required: true }
+    base: ""
   },
   tools: "agent_github",
 });
 
-// const { client } = await github.api();
+const { vars } = env
+const base = vars.base || (await git.defaultBranch())
+const changes = await git.diff({
+  base,
+  llmify: true,
+})
 
-// const diff = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
-//   owner: 'babblebey',
-//   repo: 'test',
-//   pull_number: env.vars.pull_request,
-//   headers: {
-//     'X-GitHub-Api-Version': '2022-11-28'
-//   }
-// });
+def("GIT_DIFF", changes, {
+  language: "diff",
+  maxTokens: 14000,
+  detectPromptInjection: "available",
+});
 
-// const word = diff.data[0].patch;
+$`You are an AI reviewer for jargons.dev word contributions. 
+This Pull Request represents the addition of new word or edit to existing word with changes captured in GIT_DIFF.
 
-// defAgent
-
-// const changes = await git.diff({
-//     staged: true,
-//     // paths: ["src/content/dictionary/**.mdx"]
-// });
-
-$`You are an AI reviewer for jargons.dev word contributions. Words are submitted as individual files in the \`src/content/dictionary/\` directory. This Pull Request contains contributions of new words or edits to existing words.
-Each word is an \`.mdx\` file with YAML frontmatter and a body.  
+Each word is an \`.mdx\` file with YAML frontmatter and a body.
 
 - The \`title\` in the frontmatter contains the word being defined.  
 - The body of the file contains the meaning, explanation, and (if necessary) example.  
@@ -64,7 +59,9 @@ OUT-OF-SCOPE WORDS:
 ---
 
 ### Your Task:
-1. Review the \`.mdx\` file (title + body).  
+1. Review the \`.mdx\` file (title + body). 
+  - In the case where an edit is made to an existing mdx file, use tools to read the entire edited file to get full context.
+  - In the case of a new mdx file added, use only the provided content.
 2. Check if the body content follows the rules above.  
 3. Respond with:  
    - **Star Rating (⭐ 1–5):** Reflects how well it adheres to the rules.  

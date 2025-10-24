@@ -1,13 +1,33 @@
 script({
   description: "Review a word contribution pull request",
-  parameters: {
-    base: ""
-  },
+  // parameters: {
+  //   base: ""
+  // },
   tools: "agent_github",
 });
 
-const { vars } = env
-const base = vars.base || (await git.defaultBranch())
+// const { client } = await github.api();
+
+// const diff = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
+//   owner: 'babblebey',
+//   repo: 'test',
+//   pull_number: env.vars.pull_request,
+//   headers: {
+//     'X-GitHub-Api-Version': '2022-11-28'
+//   }
+// });
+
+// const word = diff.data[0].patch;
+
+// defAgent
+
+// const changes = await git.diff({
+//     staged: true,
+//     // paths: ["src/content/dictionary/**.mdx"]
+// });
+
+// const { dbg, vars } = env
+const base = await git.branch()
 const changes = await git.diff({
   base,
   llmify: true,

@@ -1,43 +1,32 @@
 script({
   description: "Review a word contribution pull request",
-  // parameters: {
-  //   base: ""
-  // },
+  parameters: {
+    pull_request_number: { type: "number", required: false, description: "The pull request number to review. If not provided, the latest pull request will be used." },
+  },
   tools: "agent_github",
 });
 
-// const { client } = await github.api();
 
-// const diff = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
-//   owner: 'babblebey',
-//   repo: 'test',
-//   pull_number: env.vars.pull_request,
-//   headers: {
-//     'X-GitHub-Api-Version': '2022-11-28'
-//   }
-// });
+const pull_request = await github.getPullRequest(env.vars.pull_request_number);
+await github.createReaction("issue", pull_request?.number || env.vars.pull_request_number, "eyes");
+const { client } = await github.api();
+  
+const { data: files } = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
+  owner: 'babblebey',
+  repo: 'test',
+  pull_number: pull_request?.number || env.vars.pull_request_number,
+  headers: {
+    'X-GitHub-Api-Version': '2022-11-28'
+  }
+});
 
-// const word = diff.data[0].patch;
-
-// defAgent
-
-// const changes = await git.diff({
-//     staged: true,
-//     // paths: ["src/content/dictionary/**.mdx"]
-// });
-
-// const { dbg, vars } = env
-const base = await git.branch()
-const changes = await git.diff({
-  base,
-  llmify: true,
-})
-
-def("GIT_DIFF", changes, {
+def("GIT_DIFF", files[0].patch, {
   language: "diff",
   maxTokens: 14000,
   detectPromptInjection: "available",
 });
+
+def("FILE_NAME", files[0].filename);
 
 $`You are an AI reviewer for jargons.dev word contributions. 
 This Pull Request represents the addition of new word or edit to existing word with changes captured in GIT_DIFF.
@@ -84,7 +73,7 @@ OUT-OF-SCOPE WORDS:
   - In the case of a new mdx file added, use only the provided content.
 2. Check if the body content follows the rules above.  
 3. Respond with:  
-   - **Star Rating (⭐ 1–5):** Reflects how well it adheres to the rules.  
+   - **Star Rating (⭐ 1-5):** Reflects how well it adheres to the rules.  
      - ⭐⭐⭐⭐⭐ = Excellent, fully aligned with rules  
      - ⭐⭐⭐⭐ = Good, minor issues  
      - ⭐⭐⭐ = Fair, needs some corrections  
@@ -94,5 +83,4 @@ OUT-OF-SCOPE WORDS:
    - **Suggested Fix (if needed):** Provide a corrected version of the body only (do not rewrite frontmatter).  
 
 Important: Never remove or edit the frontmatter, only review the body.
-
 `;

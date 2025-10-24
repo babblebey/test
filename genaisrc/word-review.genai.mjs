@@ -1,22 +1,23 @@
 script({
-    description: "Review a word contribution pull request",
-    parameters: {
-        pull_request: { type: "number", description: "The pull request number to review", required: true }
-    }
+  description: "Review a word contribution pull request",
+  parameters: {
+    pull_request: { type: "number", description: "The pull request number to review", required: true }
+  },
+  tools: "agent_github",
 });
 
-const { client } = await github.api();
+// const { client } = await github.api();
 
-const diff = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
-  owner: 'babblebey',
-  repo: 'test',
-  pull_number: env.vars.pull_request,
-  headers: {
-    'X-GitHub-Api-Version': '2022-11-28'
-  }
-});
+// const diff = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
+//   owner: 'babblebey',
+//   repo: 'test',
+//   pull_number: env.vars.pull_request,
+//   headers: {
+//     'X-GitHub-Api-Version': '2022-11-28'
+//   }
+// });
 
-const word = diff.data[0].patch;
+// const word = diff.data[0].patch;
 
 // defAgent
 
@@ -25,10 +26,8 @@ const word = diff.data[0].patch;
 //     // paths: ["src/content/dictionary/**.mdx"]
 // });
 
-def("WORD", word);
-
-$`You are an AI reviewer for jargons.dev word contributions.  
-Each WORD is an \`.mdx\` file with YAML frontmatter and a body.  
+$`You are an AI reviewer for jargons.dev word contributions. Words are submitted as individual files in the \`src/content/dictionary/\` directory. This Pull Request contains contributions of new words or edits to existing words.
+Each word is an \`.mdx\` file with YAML frontmatter and a body.  
 
 - The \`title\` in the frontmatter contains the word being defined.  
 - The body of the file contains the meaning, explanation, and (if necessary) example.  

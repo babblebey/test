@@ -29,10 +29,10 @@ jobs:
           cd actions/mdx-review
           npm ci
       
-      - name: Build action
-        run: |
-          cd actions/mdx-review
-          npm run build
+      # - name: Build action
+      #   run: |
+      #     cd actions/mdx-review
+      #     npm run build
       
       - name: Run MDX Review
         uses: ./actions/mdx-review

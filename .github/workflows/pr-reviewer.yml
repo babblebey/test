@@ -1,6 +1,6 @@
 name: PR Reviewer
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, ready_for_review, reopened]
 
 permissions:
@@ -12,16 +12,24 @@ jobs:
   pr-reviewer:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+
       - name: Generate GitHub App Token
         id: generate-token
         uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: genaiscript/pr-reviewer
         run: npx -y genaiscript@latest run word-review --pull-request-comment --out-trace $GITHUB_STEP_SUMMARY
         env:

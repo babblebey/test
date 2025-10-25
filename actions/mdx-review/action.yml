@@ -1,0 +1,56 @@
+name: 'MDX Content Review'
+description: 'Automatically review MDX content in Pull Requests using LLM'
+author: 'babblebey'
+
+inputs:
+  api_key:
+    description: 'API key for the LLM provider (e.g., OpenAI, Anthropic)'
+    required: true
+  provider:
+    description: 'LLM provider name (openai, anthropic, etc.)'
+    required: false
+    default: 'openai'
+  model:
+    description: 'Model name to use (e.g., gpt-4o-mini, claude-3-5-sonnet-20241022)'
+    required: false
+    default: 'gpt-4o-mini'
+  temperature:
+    description: 'Temperature for LLM responses (0.0-1.0)'
+    required: false
+    default: '0.3'
+  max_tokens:
+    description: 'Maximum tokens for LLM response'
+    required: false
+    default: '2000'
+  approval_threshold:
+    description: 'Minimum rating (1-5) to approve PR'
+    required: false
+    default: '4'
+  max_files:
+    description: 'Maximum number of MDX files to process per PR'
+    required: false
+    default: '20'
+  prompt_template:
+    description: 'Optional custom prompt template override'
+    required: false
+    default: ''
+  github_token:
+    description: 'GitHub token for API access'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  rating:
+    description: 'Overall content quality rating (1-5)'
+  files_processed:
+    description: 'Number of files reviewed'
+  suggestions_count:
+    description: 'Total number of suggestions provided'
+  tokens_used:
+    description: 'Estimated tokens used by LLM'
+  estimated_cost:
+    description: 'Estimated cost in USD'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'

@@ -1,20 +1,20 @@
 script({
   description: "Review a word contribution pull request",
-  parameters: {
-    pull_request_number: { type: "number", required: false, description: "The pull request number to review. If not provided, the latest pull request will be used." },
-  },
-  tools: "agent_github",
+  // parameters: {
+  //   pull_request_number: { type: "number", required: false, description: "The pull request number to review. If not provided, the latest pull request will be used." },
+  // },
+  // tools: "agent_github",
 });
 
 
-const pull_request = await github.getPullRequest(env.vars.pull_request_number);
+const pull_request = await github.getPullRequest();
 // await github.createReaction("pull_request", pull_request?.number || env.vars.pull_request_number, "eyes");
 const { client } = await github.api();
   
 const { data: files } = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {
   owner: 'babblebey',
   repo: 'test',
-  pull_number: pull_request?.number || env.vars.pull_request_number,
+  pull_number: pull_request?.number,
   headers: {
     'X-GitHub-Api-Version': '2022-11-28'
   }

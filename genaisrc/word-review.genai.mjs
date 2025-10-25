@@ -8,7 +8,7 @@ script({
 
 
 const pull_request = await github.getPullRequest(env.vars.pull_request_number);
-await github.createReaction("issue", pull_request?.number || env.vars.pull_request_number, "eyes");
+// await github.createReaction("pull_request", pull_request?.number || env.vars.pull_request_number, "eyes");
 const { client } = await github.api();
   
 const { data: files } = await client.request('GET /repos/{owner}/{repo}/pulls/{pull_number}/files', {

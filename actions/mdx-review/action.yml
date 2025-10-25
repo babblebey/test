@@ -53,4 +53,16 @@ outputs:
 
 runs:
   using: 'node20'
-  main: 'dist/index.js'
+  steps:
+    run: |
+      npx tsx index.ts
+    env:
+      API_KEY: ${{ inputs.api_key }}
+      PROVIDER: ${{ inputs.provider }}
+      MODEL: ${{ inputs.model }}
+      TEMPERATURE: ${{ inputs.temperature }}
+      MAX_TOKENS: ${{ inputs.max_tokens }}
+      APPROVAL_THRESHOLD: ${{ inputs.approval_threshold }}
+      MAX_FILES: ${{ inputs.max_files }}
+      PROMPT_TEMPLATE: ${{ inputs.prompt_template }}
+      GITHUB_TOKEN: ${{ inputs.github_token }}

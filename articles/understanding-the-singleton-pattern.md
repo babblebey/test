@@ -1,0 +1,85 @@
+---
+title: "Understanding the Singleton Pattern"
+slug: "understanding-the-singleton-pattern"
+description: "Learn what a singleton is, when a shared instance can be useful, and the tradeoffs to consider before using one."
+draft: true
+publishedAt: "2026-11-24"
+author:
+  name: "Demo Author"
+  url: "https://example.com/authors/demo-author"
+cover:
+  url: "https://example.com/images/singleton-cover.webp"
+  alt: "A diagram showing multiple components using one shared configuration object"
+categories:
+  - "Software Engineering"
+tags:
+  - "design-patterns"
+  - "javascript"
+relatedWords:
+  - "singleton"
+---
+
+> **Demo content:** The author and image URLs are placeholders. Replace them before publishing. The publication date is an example, not a record of publication.
+
+Some resources make sense as shared objects. An application might need one configuration reader or one client for a particular service. The Singleton pattern is one way to make that shared instance available throughout an application.
+
+## What is a singleton?
+
+A [singleton](/browse/singleton) is an object designed to have one instance within a defined scope, with a way for other code to access it. That scope matters: one instance per application process is different from one instance across an entire distributed system.
+
+A singleton can provide a consistent source of shared state. It does not, by itself, guarantee that the state is safe to change or that multiple servers will share the same instance.
+
+## A JavaScript example
+
+A JavaScript module can expose a shared object without implementing a singleton class:
+
+```js
+// config.js
+const config = Object.freeze({
+  apiBaseUrl: "https://api.example.com",
+  requestTimeoutMs: 5000,
+});
+
+export default config;
+```
+
+Other modules can import the same configuration:
+
+```js
+// api-client.js
+import config from "./config.js";
+
+export function getApiUrl(path) {
+  return new URL(path, config.apiBaseUrl).href;
+}
+```
+
+Within a module-loading environment, imports of the same resolved module normally share its evaluated module instance. Separate processes, workers, module environments, or differently resolved copies can still have separate instances. This example shares an object; it does not prevent someone from creating another configuration object elsewhere.
+
+## When can it help?
+
+A shared instance can be useful when initialization is expensive or when consumers should use the same configuration. A database client or connection pool can be a good candidate, provided its library and deployment environment support that usage.
+
+Before sharing a resource, define its lifecycle: when it is created, whether it can be reconfigured, and how it is closed. For example, a serverless environment may reuse a client between requests in one warm instance, but it can also start multiple independent instances.
+
+## The tradeoffs
+
+A globally accessible object can hide dependencies. If a function imports shared state directly, its caller cannot easily tell what the function needs. Mutable shared state can also make tests depend on execution order and make concurrent behavior harder to reason about.
+
+Passing a dependency explicitly is often simpler:
+
+```js
+export function createApiClient(config) {
+  return {
+    getUrl(path) {
+      return new URL(path, config.apiBaseUrl).href;
+    },
+  };
+}
+```
+
+The application can create one client and pass it to the places that need it. Tests can pass a different configuration without changing shared state.
+
+## Takeaway
+
+Use a singleton when a shared instance solves a concrete problem, not merely because the pattern is available. Be explicit about its scope and lifecycle, and consider dependency injection when testability or flexibility matters.
